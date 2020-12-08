@@ -1,3 +1,5 @@
 # discord-bot
 
-jeremiah and jq say hi; 
+YO!
+
+jeremiah and jq say hi;
