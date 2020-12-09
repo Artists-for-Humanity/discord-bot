@@ -1,8 +1,10 @@
-console.log('ya know what i mean')
+console.log('ya know what i mean');
+
+require('dotenv').config();
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
-client.login('Nzg1OTc3NTYwNTYzNDQ5ODg2.X8_spQ.oStzkXgNPWVWjvoiTS-lQ_CYKaI');
+client.login(process.env.BOTTOKEN);
 
 client.on('ready', readyDiscord);
 
@@ -12,10 +14,10 @@ function readyDiscord() {
 
 const replies = [
   'December 24',
-  'idk bro',
   'check the calendar!!!',
   'ask jq',
-  'Christmas eve'
+  'Christmas eve',
+  'uuhhhh ya know what i mean',
 ]
 
 client.on('message', gotMessage);
