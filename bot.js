@@ -10,11 +10,19 @@ function readyDiscord() {
   console.log('happy birthday winter babies');
 }
 
+const replies = [
+  'December 24',
+  'idk bro',
+  'check the calendar!!!',
+  'ask jq',
+  'Christmas eve'
+]
+
 client.on('message', gotMessage);
 
 function gotMessage(msg){
-  console.log(msg.content);
-  if (msg.content === 'when is break') {
-    msg.reply('December 24')
+  if (msg.channel.id == '785990104366841897'  && msg.content === 'when is break') {
+    const index = Math.floor(Math.random() * replies.length);
+    msg.reply(replies[index]);
   }
 }
