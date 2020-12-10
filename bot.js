@@ -1,6 +1,7 @@
 console.log('ya know what i mean');
 
 require('dotenv').config();
+var luxon = require('luxon');
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -10,7 +11,7 @@ client.on('ready', readyDiscord);
 
 function readyDiscord() {
   console.log('happy winter');
-  console.log(getReply())
+  console.log(getReply());
   // client.channels.cache
   //   .get(CHANNEL_ID)
   //   .send(getReply())
@@ -18,13 +19,15 @@ function readyDiscord() {
 
 const replies = [{
     name: 'Christmas eve',
-    date: 'December 24',
+    date: 1608768000,
   },
   {
     name: 'Christmas',
-    date: 'December 25',
+    date: 1608854400,
   }
 ]
+
+
 
 client.on('message', gotMessage);
 
@@ -38,5 +41,6 @@ function gotMessage(msg) {
 function getReply() {
   const index = Math.floor(Math.random() * replies.length);
   const date = replies[index]
-  return date['name'] + ' on ' + date['date'];
+  const formattedDate = luxon.DateTime.fromSeconds(date['date']).toFormat('MMMM dd');
+  return date['name'] + ' is on ' + formattedDate;
 }
