@@ -6,6 +6,8 @@
   "dependencies": {
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
-    "luxon": "^1.25.0"
+    "fs": "0.0.1-security",
+    "luxon": "^1.25.0",
+    "sqlite3": "5.0.0"
   }
 }

@@ -1,46 +1,79 @@
-console.log('ya know what i mean');
+// Import our .env file
+require("dotenv").config();
 
-require('dotenv').config();
-var luxon = require('luxon');
+// Import the plugins we need
+const Discord = require("discord.js");
+const luxon = require("luxon");
+const fs = require("fs");
 
-const Discord = require('discord.js');
+// Setup our database
+const dbFile = "../data/database.db";
+const exists = fs.existsSync(dbFile);
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database(dbFile);
+
+// if the database does not exist, create it, otherwise print records to console
+db.serialize(() => {
+  if (!exists) {
+    db.run(
+      "CREATE TABLE Dates (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date INT)"
+    );
+    console.log("New table Dates created!");
+
+    // insert some dates
+    db.serialize(() => {
+      db.run('INSERT INTO Dates (name, date) VALUES ("Christmas", 1608854400)');
+    });
+  } else {
+    console.log('Database "Dates" ready to go!');
+    db.each("SELECT * from Dates", (err, row) => {
+      if (row) {
+        console.log(`record: ${row.name} ${row.date}`);
+      }
+    });
+  }
+});
+
+// Set up the Discord plugin.
 const client = new Discord.Client();
-client.login(process.env.BOTTOKEN);
-const CHANNEL_ID = "785990104366841897"
-client.on('ready', readyDiscord);
+const CHANNEL_ID = "785990104366841897";
 
-function readyDiscord() {
-  console.log('happy winter');
-  console.log(getReply());
-  // client.channels.cache
-  //   .get(CHANNEL_ID)
-  //   .send(getReply())
+if (!process.env.BOTTOKEN) {
+  console.log("Please create an .env file with a BOTTOKEN");
+  return;
 }
 
-const replies = [{
-    name: 'Christmas eve',
-    date: 1608768000,
-  },
-  {
-    name: 'Christmas',
-    date: 1608854400,
-  }
-]
+client.login(process.env.BOTTOKEN);
+client.on("ready", readyDiscord);
 
+async function readyDiscord() {
+  console.log("Bot is ready");
+  console.log("Testing get reply...");
+  const reply = await getReply();
+  console.log(reply);
+}
 
-
-client.on('message', gotMessage);
+client.on("message", gotMessage);
 
 function gotMessage(msg) {
-  if (msg.channel.id == CHANNEL_ID && msg.content === 'when is break') {
-
-    msg.reply(getReply())
+  if (msg.channel.id == CHANNEL_ID && msg.content === "when is break") {
+    msg.reply(getReply());
   }
 }
 
-function getReply() {
-  const index = Math.floor(Math.random() * replies.length);
-  const date = replies[index]
-  const formattedDate = luxon.DateTime.fromSeconds(date['date']).toFormat('MMMM dd');
-  return date['name'] + ' is on ' + formattedDate;
+async function getReply() {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * from Dates", (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        const index = Math.floor(Math.random() * rows.length);
+        const date = rows[index];
+        const formattedDate = luxon.DateTime.fromSeconds(date["date"]).toFormat(
+          "MMMM dd"
+        );
+        resolve(date["name"] + " is on " + formattedDate);
+      }
+    });
+  });
 }
