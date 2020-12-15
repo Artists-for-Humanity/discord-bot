@@ -1,0 +1,17 @@
+<%/* This is our layout file. What that means is this file wraps all of our
+pages. So, pages/index.ejs will show the contents inside of it where you see the
+body variable printed */%>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%- title %></title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <main><%- body %></main>
+    </div>
+  </body>
+</html>
