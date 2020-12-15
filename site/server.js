@@ -28,13 +28,15 @@ const luxon = require("luxon");
 db.serialize(() => {
   if (!dbExists) {
     db.run(
-      "CREATE TABLE Dates (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date INT)"
+      "CREATE TABLE Holidays (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date INT)"
     );
-    console.log("New table Dates created!");
+    console.log("New table Holidays created!");
 
     // insert some dates
     db.serialize(() => {
-      db.run('INSERT INTO Dates (name, date) VALUES ("Christmas", 1608854400)');
+      db.run(
+        'INSERT INTO Holidays (name, date) VALUES ("Christmas", 1608854400)'
+      );
     });
   }
 });
@@ -46,34 +48,34 @@ function formatDate(date) {
 // This function runs everytime someone goes to "/" which just means the root.
 // it would be something like http://localhost:3333/ or http://oursite.com
 app.get("/", async (request, response) => {
-  db.all("SELECT * from Dates", (err, rows) => {
+  db.all("SELECT * from Holidays", (err, rows) => {
     if (err) {
       response.render("pages/index", {
         title: "Home page",
-        message: "Error loading dates",
-        dates: [],
+        message: "Error loading holidays",
+        holidays: [],
       });
     } else {
-      const dates = rows.map((date) => {
+      const holidays = rows.map((holiday) => {
         return {
-          id: date.id,
-          name: date.name,
-          date: formatDate(date.date),
+          id: holiday.id,
+          name: holiday.name,
+          date: formatDate(holiday.date),
         };
       });
 
       response.render("pages/index", {
         title: "Home page",
-        dates: dates,
+        holidays: holidays,
       });
     }
   });
 });
 
-app.post("/add-date", (request, response) => {
+app.post("/add-holiday", (request, response) => {
   const unixDate = luxon.DateTime.fromSQL(request.body.date).toSeconds();
   db.run(
-    `INSERT INTO Dates (name, date) VALUES ($name, $date)`,
+    `INSERT INTO Holidays (name, date) VALUES ($name, $date)`,
     {
       $name: request.body.name,
       $date: unixDate,
@@ -89,10 +91,10 @@ app.post("/add-date", (request, response) => {
   );
 });
 
-app.get("/delete-date/:id", (request, response) => {
-  const rowId = request.params.id;
-  db.run(`DELETE FROM Dates WHERE ID=?`, rowId, (error, row) => {
-    console.log(`deleted row ${rowId}`);
+app.get("/delete-holiday/:id", (request, response) => {
+  const holidayId = request.params.id;
+  db.run(`DELETE FROM Holidays WHERE ID=?`, holidayId, (error, row) => {
+    console.log(`deleted holiday with id: ${holidayId}`);
     response.redirect("/");
   });
 });

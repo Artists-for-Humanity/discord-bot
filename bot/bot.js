@@ -43,15 +43,17 @@ async function readyDiscord() {
 
 client.on("message", gotMessage);
 
-function gotMessage(msg) {
+async function gotMessage(msg) {
+  console.log("Message in channel");
   if (msg.channel.id == CHANNEL_ID && msg.content === "when is break") {
-    msg.reply(getReply());
+    const reply = await getReply();
+    msg.reply(reply);
   }
 }
 
 async function getReply() {
   return new Promise((resolve, reject) => {
-    db.all("SELECT * from Dates", (err, rows) => {
+    db.all("SELECT * from Holidays", (err, rows) => {
       if (err) {
         reject(err);
       } else {

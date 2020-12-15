@@ -1,6 +1,6 @@
 <div class="home-page-grid">
   <section>
-    <h2>Dates</h2>
+    <h2>Holidays</h2>
     <table class="table">
       <thead>
         <tr>
@@ -9,14 +9,20 @@
         </tr>
       </thead>
       <tbody>
-        <% dates.forEach((date) => { %>
-          <%- include('../components/date', {date: date}) %>
+        <% holidays.forEach((holiday) => { %>
+          <%-
+            include('../components/holiday-table-row', {
+              name: holiday.name,
+              date: holiday.date,
+              id: holiday.id
+            })
+          %>
         <% }) %>
       </tbody>
     </table>
   </section>
   <section>
-    <h2>Add Date</h2>
-    <%- include('../components/new-date-form') %>
+    <h2>Add Holiday</h2>
+    <%- include('../components/new-holiday-form') %>
   </section>
 </div>
