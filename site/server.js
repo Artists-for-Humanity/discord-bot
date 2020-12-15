@@ -1,3 +1,16 @@
+// Setup our database
+const fs = require("fs");
+const dbFile = "../data/database.db";
+const dbExists = fs.existsSync(dbFile);
+if (!dbExists) {
+  console.log(
+    "Please run npm start in the /data folder to create the database"
+  );
+  return;
+}
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database(dbFile);
+
 // Express js is what we use to make a website server
 const port = process.env.PORT || 3333;
 const { response } = require("express");
@@ -15,31 +28,7 @@ app.set("view engine", "ejs");
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
 
-// Setup our database
-const fs = require("fs");
-const dbFile = "../data/database.db";
-const dbExists = fs.existsSync(dbFile);
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database(dbFile);
-
 const luxon = require("luxon");
-
-// if the database does not exist, create it, otherwise print records to console
-db.serialize(() => {
-  if (!dbExists) {
-    db.run(
-      "CREATE TABLE Holidays (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date INT)"
-    );
-    console.log("New table Holidays created!");
-
-    // insert some dates
-    db.serialize(() => {
-      db.run(
-        'INSERT INTO Holidays (name, date) VALUES ("Christmas", 1608854400)'
-      );
-    });
-  }
-});
 
 function formatDate(date) {
   return luxon.DateTime.fromSeconds(date).toFormat("MMMM dd");

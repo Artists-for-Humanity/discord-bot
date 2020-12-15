@@ -9,13 +9,14 @@ const luxon = require("luxon");
 const fs = require("fs");
 const dbFile = "../data/database.db";
 const dbExists = fs.existsSync(dbFile);
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database(dbFile);
-
 if (!dbExists) {
-  console.log("Please initialize your database.");
+  console.log(
+    "Please run npm start in the /data folder to create the database"
+  );
   return;
 }
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database(dbFile);
 
 // Set up the Discord plugin.
 const client = new Discord.Client();

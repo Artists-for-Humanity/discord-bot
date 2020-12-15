@@ -1,0 +1,15 @@
+{
+  "name": "data",
+  "version": "1.0.0",
+  "description": "This folder will hold the database file.",
+  "main": "setup.js",
+  "scripts": {
+    "setup": "node setup.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "sqlite3": "5.0.0"
+  }
+}

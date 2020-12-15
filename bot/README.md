@@ -15,7 +15,8 @@
 
 In order to run the bot on your computer go through the set up steps. Then:
 
-1. In the `/bot` folder in Terminal and run `npm run start`.
+1. Open the `/bot` folder in your Terminal (Mac) or Powershell (Windows).
+1. Run `npm run start`.
 
 ## Reference
 

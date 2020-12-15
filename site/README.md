@@ -11,6 +11,5 @@ This is the website to accompany our discord bot.
 
 ## Starting the app
 
-In order to run the bot on your computer go through the set up steps. Then:
-
-1. In the `/site` folder in Terminal and run `npm run start`.
+1. Open the `/site` folder in your Terminal (Mac) or Powershell (Windows).
+1. Run `npm run start`.

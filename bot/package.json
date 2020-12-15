@@ -1,7 +1,7 @@
 {
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "nodemon bot.js"
   },
   "dependencies": {
     "discord.js": "^12.5.1",
@@ -9,5 +9,8 @@
     "fs": "0.0.1-security",
     "luxon": "^1.25.0",
     "sqlite3": "5.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.6"
   }
 }
