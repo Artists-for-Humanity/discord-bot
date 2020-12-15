@@ -36,14 +36,19 @@ db.serialize(() => {
 
 // Set up the Discord plugin.
 const client = new Discord.Client();
-const CHANNEL_ID = "785990104366841897";
+const CHANNEL_ID = process.env.CHANNEL_ID;
 
-if (!process.env.BOTTOKEN) {
-  console.log("Please create an .env file with a BOTTOKEN");
+if (!process.env.BOT_TOKEN) {
+  console.log("Please create an .env file with a BOT_TOKEN");
   return;
 }
 
-client.login(process.env.BOTTOKEN);
+if (!process.env.CHANNEL_ID) {
+  console.log("Please create an .env file with a CHANNEL_ID");
+  return;
+}
+
+client.login(process.env.BOT_TOKEN);
 client.on("ready", readyDiscord);
 
 async function readyDiscord() {
