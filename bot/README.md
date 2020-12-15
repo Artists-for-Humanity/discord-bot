@@ -2,13 +2,14 @@
 
 ## Set up
 
-1. Make sure [npm is installed](https://www.npmjs.com/get-npm).
-1. Download the code using the green Code button [on the main page of the project](https://github.com/Artists-for-Humanity/discord-bot) or clone the repository in your Github Desktop app.
+1. Follow the instructions in the [top level README](/).
+1. Get the [site](/site) app up and running to make sure we have a database.
 1. Copy the file `.env.example` and save it as `.env` in the `/bot` folder.
 1. [Get your Discord bot token](https://www.writebots.com/discord-bot-token/#:~:text=A%20Discord%20Bot%20Token%20is,generate%20a%20Discord%20Bot%20Token) and replace `PUT_YOUR_TOKEN_HERE` with your token in the `.env` file. Leave the quotes around the value.
 1. [Enable developer](https://discordia.me/en/developer-mode) mode in Discord and then [copy the channel ID](https://discordia.me/en/developer-mode#usage) and replace `PUT_YOUR_CHANNEL_ID_HERE` in the `.env` file. Leeave the quotes around the value.
 1. Open the `/bot` folder in your Terminal (Mac) or Powershell (Windows).
 1. Run `npm install` in Terminal.
+1. Start the app.
 
 ## Starting the app
 
