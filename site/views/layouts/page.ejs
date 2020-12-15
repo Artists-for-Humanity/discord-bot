@@ -10,8 +10,14 @@ body variable printed */%>
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <div class="wrapper">
-      <main><%- body %></main>
-    </div>
+    <% if(locals.message) { %>
+      <div>
+        Message: <em><%= message %></em>
+      </div>
+    <% } %>
+    <header>
+      <h1>Discord Bot</h1>
+    </header>
+    <main><%- body %></main>
   </body>
 </html>

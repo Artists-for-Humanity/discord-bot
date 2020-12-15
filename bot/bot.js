@@ -4,35 +4,18 @@ require("dotenv").config();
 // Import the plugins we need
 const Discord = require("discord.js");
 const luxon = require("luxon");
-const fs = require("fs");
 
 // Setup our database
+const fs = require("fs");
 const dbFile = "../data/database.db";
-const exists = fs.existsSync(dbFile);
+const dbExists = fs.existsSync(dbFile);
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(dbFile);
 
-// if the database does not exist, create it, otherwise print records to console
-db.serialize(() => {
-  if (!exists) {
-    db.run(
-      "CREATE TABLE Dates (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date INT)"
-    );
-    console.log("New table Dates created!");
-
-    // insert some dates
-    db.serialize(() => {
-      db.run('INSERT INTO Dates (name, date) VALUES ("Christmas", 1608854400)');
-    });
-  } else {
-    console.log('Database "Dates" ready to go!');
-    db.each("SELECT * from Dates", (err, row) => {
-      if (row) {
-        console.log(`record: ${row.name} ${row.date}`);
-      }
-    });
-  }
-});
+if (!dbExists) {
+  console.log("Please initialize your database.");
+  return;
+}
 
 // Set up the Discord plugin.
 const client = new Discord.Client();

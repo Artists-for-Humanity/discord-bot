@@ -1,5 +1,22 @@
-<section>
-  <% dates.forEach((date) => { %>
-    <%- include('../components/date', {date: date}) %>
-  <% }) %>
-</section>
+<div class="home-page-grid">
+  <section>
+    <h2>Dates</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% dates.forEach((date) => { %>
+          <%- include('../components/date', {date: date}) %>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+  <section>
+    <h2>Add Date</h2>
+    <%- include('../components/new-date-form') %>
+  </section>
+</div>

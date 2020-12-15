@@ -1,0 +1,30 @@
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+body {
+  font-family: "Helvetica", san-serif;
+  font-size: 20px;
+  padding: 1rem;
+}
+
+.home-page-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+}
+
+.table td,
+.table th {
+  padding: 5px 10px 5px 10px;
+}
+
+.table th {
+  text-align: left;
+}
