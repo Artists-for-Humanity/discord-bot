@@ -1,7 +1,16 @@
+<!--
+  This HTML gets used for each holiday.
+  It is used in views/pages/index.ejs
+-->
 <tr>
   <td><%= name %></td>
   <td><%= date %></td>
   <td>
+    <!--
+      Notice that the href here matches a URL in our server.js file.
+      It is linked to this URL in the code:
+      app.get("/delete-holiday/:id"....
+    -->
     <a href="/delete-holiday/<%= id %>">Delete</a>
   </td>
 </tr>
