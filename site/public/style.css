@@ -1,3 +1,7 @@
+/*
+  Global styles
+*/
+
 *,
 *:after,
 *:before {
@@ -14,11 +18,19 @@ body {
   padding: 1rem;
 }
 
+/*
+  Home Page styles
+*/
+
 .home-page-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
 }
+
+/*
+  Holiday table styles
+*/
 
 .table td,
 .table th {
@@ -28,3 +40,24 @@ body {
 .table th {
   text-align: left;
 }
+
+/*
+  Nav styles
+*/
+
+.nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav li {
+  margin-right: 1rem;
+}
+
+/* 
+  Form styles
+*/
+
+/* .... add the form styles here! */
