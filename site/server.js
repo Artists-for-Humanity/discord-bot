@@ -1,3 +1,9 @@
+/*
+  NOTE:
+  DON'T WORRY MUCH ABOUT THIS CODE,
+  IT'S JUST SETTING SOME THINGS UP
+*/
+
 // Setup our database
 const fs = require("fs");
 const dbFile = "../data/database.db";
@@ -16,78 +22,170 @@ const port = process.env.PORT || 3333;
 const { response } = require("express");
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
-
-// Setup express and configure some options for our use case.
 const app = express();
 app.use(express.static("public"));
 app.use(expressLayouts);
 app.set("layout", "./layouts/page");
 app.set("view engine", "ejs");
-
-// Some stuff to make our form work
-app.use(express.json()); // to support JSON-encoded bodies
-app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const luxon = require("luxon");
 
-function formatDate(date) {
-  return luxon.DateTime.fromSeconds(date).toFormat("MMMM dd");
-}
+/*
+  NOTE:
+  START READING THE CODE HERE
+*/
 
-// This function runs everytime someone goes to "/" which just means the root.
-// it would be something like http://localhost:3333/ or http://oursite.com
+// Our goal here is to make what's called a web server.
+// All a web server is is a program that does stuff when people
+// go to a link on the website.
+// Down below we have code for three different URLs.
+
+//
+// This function runs everytime someone goes to "/".
+// It would be something like http://localhost:3333/ or http://oursite.com/
 app.get("/", async (request, response) => {
-  db.all("SELECT * from Holidays", (err, rows) => {
-    if (err) {
-      response.render("pages/index", {
-        title: "Home page",
-        message: "Error loading holidays",
-        holidays: [],
-      });
-    } else {
-      const holidays = rows.map((holiday) => {
-        return {
-          id: holiday.id,
-          name: holiday.name,
-          date: formatDate(holiday.date),
-        };
-      });
+  //
+  // On the homepage of our bot we want to show a list of all the holidays.
+  // To do that we have to get them from our database and then pass them to our HTML.
 
-      response.render("pages/index", {
-        title: "Home page",
-        holidays: holidays,
-      });
-    }
+  //
+  // Get all of our holidays
+  getAllHolidays((databaseData) => {
+    //
+    // databaseData is the data we got straight from the database.
+    // It looks like this:
+    // [
+    //  {id: 1, name: "Christmas", date: 1608854400}
+    // ]
+    // Remember, date here is a Unix timestamp which isn't very readable.
+
+    //
+    // Here we use a thing called map.
+    // What map does is it goes through every item in the array,
+    // and does something to it.
+    // If we have three holidays in databaseData the code inside the
+    // map will run three times. Once for each.
+    const holidays = databaseData.map((databaseHoliday) => {
+      // databaseHoliday looks like {id: 1, name: "Christmas", date: 1608854400}
+      //
+      // Here we take the date from the database entry and set it to a variable
+      const databaseDate = databaseHoliday.date;
+      //
+      // then we take that variable that has the database date
+      // and use luxon to make it a date we can read.
+      // 1608854400 goes in, and "December 25" comes out.
+      const formattedDate = luxon.DateTime.fromSeconds(databaseDate).toFormat(
+        "MMMM dd"
+      );
+      //
+      // Here is where we tell the map what data we want to use.
+      // Notice that we are passing id and name directly back
+      // but for the date we are using the date we formatted.
+      return {
+        id: databaseHoliday.id,
+        name: databaseHoliday.name,
+        date: formattedDate,
+      };
+    });
+
+    //
+    // Finally we want to use the data we retrieved and formatted from the database
+    // and pass it into our HTML files.
+    // What this code is doing is passing a variable called holiday
+    // into the file located in our project at /site/views/pages/index.ejs
+    response.render("pages/index", {
+      holidays: holidays,
+    });
   });
 });
 
+//
+// Here is where we tell the server what to do on another URL.
+// This is the URL that our add holiday form sends it's data to.
+// We never visit this URL ourselves. When we submit the form it will
+// go to this URL for us.
 app.post("/add-holiday", (request, response) => {
-  const unixDate = luxon.DateTime.fromSQL(request.body.date).toSeconds();
-  db.run(
-    `INSERT INTO Holidays (name, date) VALUES ($name, $date)`,
-    {
-      $name: request.body.name,
-      $date: unixDate,
-    },
-    (error) => {
-      if (error) {
-        console.log(error);
-        response.redirect("/");
-      } else {
-        response.redirect("/");
-      }
-    }
-  );
-});
+  //
+  // We can get the name and date sent by the form
+  // through request.body
+  //
+  // This date from the form is sent to use like 2020-12-25
+  const formHolidayDate = request.body.date;
+  const formHolidayName = request.body.name;
 
-app.get("/delete-holiday/:id", (request, response) => {
-  const holidayId = request.params.id;
-  db.run(`DELETE FROM Holidays WHERE ID=?`, holidayId, (error, row) => {
-    console.log(`deleted holiday with id: ${holidayId}`);
+  //
+  // Here we convert the date from the 2020-12-25 format into the Unix date format 1608854400
+  const unixDate = luxon.DateTime.fromSQL(formHolidayDate).toSeconds();
+
+  // Add the holiday with name and date
+  addHoliday(formHolidayName, unixDate, () => {
+    //
+    // After we add the holiday to the database
+    // reload the homepage.
     response.redirect("/");
   });
 });
 
+//
+// This is the URL that our delete button navigates to.
+// Notice the :id in the URL. This is a way we can use a variable in the URL.
+// So visiting /delete-holiday/3 will make our id 3
+// visiting /delete-holiday/5 will make our id 5
+app.get("/delete-holiday/:id", (request, response) => {
+  //
+  // This is how we get the variable id from the URL.
+  const holidayId = request.params.id;
+
+  // Call our deleteHoliday function and pass the id of the holiday to it
+  deleteHoliday(holidayId, () => {
+    //
+    // After we delete the holiday from the database
+    // reload the homepage.
+    response.redirect("/");
+  });
+});
+
+/*
+  NOTE:
+  DATABASE STUFF. DON'T WORRY TOO MUCH ABOUT THE DETAILS.
+*/
+
+// Get all of our Holidays from the database
+// and pass them to our callback function once they are retrieved.
+const getAllHolidays = (callback) => {
+  db.all("SELECT * from Holidays", (err, rows) => {
+    callback(rows);
+  });
+};
+
+// Add a holiday to the database with a name and date.
+// Run our callback function once it has been added.
+const addHoliday = (name, date, callback) => {
+  db.run(
+    `INSERT INTO Holidays (name, date) VALUES ($name, $date)`,
+    {
+      $name: name,
+      $date: date,
+    },
+    () => {
+      // Run our callback function
+      callback();
+    }
+  );
+};
+
+// Delete a holiday with a specific id.
+// Run our callback function once it has been added.
+const deleteHoliday = (id, callback) => {
+  db.run(`DELETE FROM Holidays WHERE ID=?`, id, () => {
+    // Run our callback function
+    callback();
+  });
+};
+
+// Don't worry about this. More server stuff.
 const listener = app.listen(port, () => {
   console.log(`Your app is listening on port ${listener.address().port}`);
 });
