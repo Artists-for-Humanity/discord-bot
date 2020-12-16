@@ -59,11 +59,11 @@ async function getReply() {
         reject(err);
       } else {
         const index = Math.floor(Math.random() * rows.length);
-        const date = rows[index];
-        const formattedDate = luxon.DateTime.fromSeconds(date["date"]).toFormat(
-          "MMMM dd"
-        );
-        resolve(date["name"] + " is on " + formattedDate);
+        const holiday = rows[index];
+        const formattedStartDate = luxon.DateTime.fromSeconds(
+          holiday["startDate"]
+        ).toFormat("MMMM dd");
+        resolve(holiday["name"] + " starts on " + formattedStartDate);
       }
     });
   });
