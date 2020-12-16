@@ -147,6 +147,16 @@ app.get("/delete-holiday/:id", (request, response) => {
   });
 });
 
+//
+// This function runs everytime someone goes to "/about".
+// All we do here is simply tell the server to show our page's HTML
+// which is located at /site/views/pages/about.ejs
+app.get("/about", (request, response) => {
+  //
+  // Show our about page
+  response.render("pages/about");
+});
+
 /*
   NOTE:
   DATABASE STUFF. DON'T WORRY TOO MUCH ABOUT THE DETAILS.
