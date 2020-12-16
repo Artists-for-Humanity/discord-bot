@@ -10,7 +10,7 @@ const dbFile = "../data/database.db";
 const dbExists = fs.existsSync(dbFile);
 if (!dbExists) {
   console.log(
-    "Please run npm start in the /data folder to create the database"
+    "Please run npm setup in the /data folder to create the database"
   );
   return;
 }
@@ -66,19 +66,19 @@ app.get("/", async (request, response) => {
     // What map does is it goes through every item in the array,
     // and does something to it.
     // If we have three holidays in databaseData the code inside the
-    // map will run three times. Once for each.
+    // map will run three times. Once for each holiday item.
     const holidays = databaseData.map((databaseHoliday) => {
-      // databaseHoliday looks like {id: 1, name: "Christmas", date: 1608854400}
+      // databaseHoliday looks like {id: 1, name: "Christmas", startDate: 1608854400}
       //
-      // Here we take the date from the database entry and set it to a variable
-      const databaseDate = databaseHoliday.date;
+      // Here we take the start date from the database entry and set it to a variable
+      const databaseStartDate = databaseHoliday.startDate;
       //
-      // then we take that variable that has the database date
+      // then we take that variable that has the database start date
       // and use luxon to make it a date we can read.
       // 1608854400 goes in, and "December 25" comes out.
-      const formattedDate = luxon.DateTime.fromSeconds(databaseDate).toFormat(
-        "MMMM dd"
-      );
+      const formattedStartDate = luxon.DateTime.fromSeconds(
+        databaseStartDate
+      ).toFormat("MMMM dd");
       //
       // Here is where we tell the map what data we want to use.
       // Notice that we are passing id and name directly back
@@ -86,7 +86,7 @@ app.get("/", async (request, response) => {
       return {
         id: databaseHoliday.id,
         name: databaseHoliday.name,
-        date: formattedDate,
+        startDate: formattedStartDate,
       };
     });
 
@@ -108,19 +108,21 @@ app.get("/", async (request, response) => {
 // go to this URL for us.
 app.post("/add-holiday", (request, response) => {
   //
-  // We can get the name and date sent by the form
+  // We can get the name and start date sent by the form
   // through request.body
   //
-  // This date from the form is sent to use like 2020-12-25
-  const formHolidayDate = request.body.date;
+  // This start date from the form is sent to use like 2020-12-25
+  const formHolidayStartDate = request.body.startDate;
   const formHolidayName = request.body.name;
 
   //
-  // Here we convert the date from the 2020-12-25 format into the Unix date format 1608854400
-  const unixDate = luxon.DateTime.fromSQL(formHolidayDate).toSeconds();
+  // Here we convert the start date from the 2020-12-25 format into the Unix date format 1608854400
+  const unixStartDate = luxon.DateTime.fromSQL(
+    formHolidayStartDate
+  ).toSeconds();
 
   // Add the holiday with name and date
-  addHoliday(formHolidayName, unixDate, () => {
+  addHoliday(formHolidayName, unixStartDate, () => {
     //
     // After we add the holiday to the database
     // reload the homepage.
@@ -170,14 +172,14 @@ const getAllHolidays = (callback) => {
   });
 };
 
-// Add a holiday to the database with a name and date.
+// Add a holiday to the database with a name and start date.
 // Run our callback function once it has been added.
-const addHoliday = (name, date, callback) => {
+const addHoliday = (name, startDate, callback) => {
   db.run(
-    `INSERT INTO Holidays (name, date) VALUES ($name, $date)`,
+    `INSERT INTO Holidays (name, startDate) VALUES ($name, $startDate)`,
     {
       $name: name,
-      $date: date,
+      $startDate: startDate,
     },
     () => {
       // Run our callback function

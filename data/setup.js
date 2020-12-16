@@ -9,14 +9,14 @@ const db = new sqlite3.Database(dbFile);
 db.serialize(() => {
   if (!dbExists) {
     db.run(
-      "CREATE TABLE Holidays (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date INT)"
+      "CREATE TABLE Holidays (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, startDate INT)"
     );
     console.log("New table Holidays created!");
 
     // insert some dates
     db.serialize(() => {
       db.run(
-        'INSERT INTO Holidays (name, date) VALUES ("Christmas", 1608854400)'
+        'INSERT INTO Holidays (name, startDate) VALUES ("Christmas", 1608854400)'
       );
     });
   }
