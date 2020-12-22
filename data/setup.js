@@ -11,6 +11,9 @@ db.serialize(() => {
     db.run(
       "CREATE TABLE Holidays (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, startDate INT)"
     );
+    db.run(
+      "CREATE TABLE Meetings (id INTEGER PRIMARY KEY AUTOINCREMENT, zoomLink TEXT, date INT, name TEXT)"
+    );
     console.log("New table Holidays created!");
 
     // insert some dates
