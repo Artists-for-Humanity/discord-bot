@@ -95,6 +95,20 @@ app.get("/", async (request, response) => {
           startDate: formattedStartDate,
         };
       });
+      const meetings = databaseMeetings.map((databaseMeeting) => {
+
+        const databaseStartDate = databaseMeeting.date;
+
+        const formattedStartDate = luxon.DateTime.fromSeconds(
+          databaseStartDate
+        ).toFormat("MMMM dd");
+
+        return {
+          ...databaseMeeting,
+          date:formattedStartDate
+        };
+      });
+      console.log(meetings);
 
       //
       // Finally we want to use the data we retrieved and formatted from the database
