@@ -117,6 +117,7 @@ app.get("/", async (request, response) => {
       // into the file located in our project at /site/views/pages/index.ejs
       response.render("pages/index", {
         holidays: holidays,
+        meetings: meetings
       });
     });
   });
