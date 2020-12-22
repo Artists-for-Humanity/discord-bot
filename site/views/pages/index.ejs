@@ -39,6 +39,37 @@
     </table>
   </section>
   <section>
+    <h2>Meetings</h2>
+    <!--
+      This is an HTML table.
+      It is a conveninent way to put data into rows and columns.
+      Read more about them here: https://www.w3schools.com/html/html_tables.asp
+    -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Zoom Link</th>
+          <th>Date</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!--
+          Here we loop through all of the holidays and put some HTML for each one.
+        -->
+        <% meetings.forEach((meeting) => { %>
+          <!--
+            Notice how we are passing some variables into this.
+            We can use these variables inside the holiday-table-row.ejs file.
+          -->
+          <%-
+            include('../components/meeting-table-row', meeting)
+          %>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+  <section>
     <h2>Add Holiday</h2>
     <!--
       This takes the html inside of views/components/new-holiday-form.ejx
