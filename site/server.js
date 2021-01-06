@@ -105,7 +105,7 @@ app.get("/", async (request, response) => {
 
         return {
           ...databaseMeeting,
-          date:formattedStartDate
+          date: formattedStartDate
         };
       });
       console.log(meetings);
@@ -146,6 +146,34 @@ app.post("/add-holiday", (request, response) => {
 
   // Add the holiday with name and date
   addHoliday(formHolidayName, unixStartDate, () => {
+    //
+    // After we add the holiday to the database
+    // reload the homepage.
+    response.redirect("/");
+  });
+});
+
+app.post("/add-meeting", (request, response) => {
+  console.log('request data')
+  console.log(request.body);
+  response.redirect("/");
+  return;
+  //
+  // We can get the name and start date sent by the form
+  // through request.body
+  //
+  // This start date from the form is sent to use like 2020-12-25
+  const formMeetingStartDate = request.body.startDate;
+  const formMeetingName = request.body.name;
+
+  //
+  // Here we convert the start date from the 2020-12-25 format into the Unix date format 1608854400
+  const unixStartDate = luxon.DateTime.fromSQL(
+    formMeetingStartDate
+  ).toSeconds();
+
+  // Add the holiday with name and date
+  addMeeting(formMeetingName, unixStartDate, () => {
     //
     // After we add the holiday to the database
     // reload the homepage.
