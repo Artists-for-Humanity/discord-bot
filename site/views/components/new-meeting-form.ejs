@@ -8,7 +8,7 @@
   server.js:
   app.post("/add-holiday", ....
 -->
-<form action="/add-holiday" method="POST">
+<form action="/add-meeting" method="POST">
   <!--
     A fieldset is an HTML element that contains a label and an input.
     You can style is however you'd like. The importance of it
@@ -22,6 +22,8 @@
       Try clicking the label on the website in your browser.
       When you click it it should put your typing cursor inside the input.
     -->
+    <label for="zoomLink">Zoom Link</label>
+    <input type="text" name="zoomLink" id="zoomLink" required />
     <label for="name">Name</label>
     <!--
       Notice that there is an attribute named required here.
@@ -45,5 +47,5 @@
     to send all of the data the user put in the inputs
     and pass it to /add-holiday on the server.
   -->
-  <button type="submit">Add Date</button>
+  <button type="submit">Add Meeting</button>
 </form>
