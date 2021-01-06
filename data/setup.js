@@ -22,6 +22,12 @@ db.serialize(() => {
         'INSERT INTO Holidays (name, startDate) VALUES ("Christmas", 1608854400)'
       );
       db.run(
+        'INSERT INTO Meetings (zoomLink, date, name) VALUES ("https://zoom.us/j/95454828935?pwd=QWlkUktxRWttRHpLOUw3ei9lajBHdz09", 1607990400, "December 15th at 5:30pm w/ Special Guest Joy Triche")'
+      );
+      db.run(
+        'INSERT INTO Meetings (zoomLink, date, name) VALUES ("https://zoom.us/j/95454828935?pwd=QWlkUktxRWttRHpLOUw3ei9lajBHdz09", 1607385600, "December 8th at 5:30pm w/ Special Guest Joy Triche")'
+      );
+      db.run(
         'INSERT INTO Meetings (zoomLink, date, name) VALUES ("https://zoom.us/j/95454828935?pwd=QWlkUktxRWttRHpLOUw3ei9lajBHdz09", 1608658200, "December 22nd at 5:30pm w/ Special Guest Joy Triche")'
       );
     });
