@@ -154,10 +154,6 @@ app.post("/add-holiday", (request, response) => {
 });
 
 app.post("/add-meeting", (request, response) => {
-  console.log('request data')
-  console.log(request.body);
-  response.redirect("/");
-  return;
   //
   // We can get the name and start date sent by the form
   // through request.body
@@ -165,7 +161,7 @@ app.post("/add-meeting", (request, response) => {
   // This start date from the form is sent to use like 2020-12-25
   const formMeetingStartDate = request.body.startDate;
   const formMeetingName = request.body.name;
-
+  const formMeetingZoomLink = request.body.zoomLink;
   //
   // Here we convert the start date from the 2020-12-25 format into the Unix date format 1608854400
   const unixStartDate = luxon.DateTime.fromSQL(
@@ -173,7 +169,7 @@ app.post("/add-meeting", (request, response) => {
   ).toSeconds();
 
   // Add the holiday with name and date
-  addMeeting(formMeetingName, unixStartDate, () => {
+  addMeeting(formMeetingZoomLink, formMeetingName, unixStartDate, () => {
     //
     // After we add the holiday to the database
     // reload the homepage.
@@ -243,6 +239,20 @@ const addHoliday = (name, startDate, callback) => {
     }
   );
 };
+const addMeeting = (zoomLink, name, date, callback) => {
+  db.run(
+    `INSERT INTO Meetings (zoomLink, name, date) VALUES ($zoomLink, $name, $date)`, {
+      $zoomLink: zoomLink,
+      $name: name,
+      $date: date,
+    },
+    () => {
+      // Run our callback function
+      callback();
+    }
+  );
+};
+
 
 // Delete a holiday with a specific id.
 // Run our callback function once it has been added.
