@@ -1,0 +1,49 @@
+<!--
+  This is the form you fill out to add a new holiday.
+  Notice that the action here matches one of the URLs in server.js
+
+  This file:
+  action="/add-holiday"
+
+  server.js:
+  app.post("/add-holiday", ....
+-->
+<form action="/add-holiday" method="POST">
+  <!--
+    A fieldset is an HTML element that contains a label and an input.
+    You can style is however you'd like. The importance of it
+    is to tell the computer these inputs and labels are related.
+  -->
+  <fieldset>
+    <!--
+      Here is a label and input for the name of the holiday.
+      Notice that the label has a for attribute.
+      This attribute needs to match the id on the input in order to connect them.
+      Try clicking the label on the website in your browser.
+      When you click it it should put your typing cursor inside the input.
+    -->
+    <label for="name">Name</label>
+    <!--
+      Notice that there is an attribute named required here.
+      This will make it so our form will not submit unless
+      the user typed in a value.
+    -->
+    <input type="text" name="name" id="name" required />
+    <!--
+      Here is a label and input for our start date.
+    -->
+    <label for="startDate">Date</label>
+    <!--
+      Notice that the type on the input is date.
+      The browser can automatically put a date picker for us
+      so we don't need to build our own.
+    -->
+    <input type="date" name="startDate" id="startDate" required />
+  </fieldset>
+  <!--
+    This button submits our form. It will trigger the form
+    to send all of the data the user put in the inputs
+    and pass it to /add-holiday on the server.
+  -->
+  <button type="submit">Add Date</button>
+</form>
