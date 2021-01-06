@@ -58,66 +58,67 @@ app.get("/", async (request, response) => {
   // Get all of our holidays
   getAllHolidays((databaseHolidays) => {
     getAllMeetings((databaseMeetings) => {
-      console.log(databaseMeetings);
-      //
-      // databaseHolidays is the data we got straight from the database.
-      // It looks like this:
-      // [
-      //  {id: 1, name: "Christmas", date: 1608854400}
-      // ]
-      // Remember, date here is a Unix timestamp which isn't very readable.
-
-      //
-      // Here we use a thing called map.
-      // What map does is it goes through every item in the array,
-      // and does something to it.
-      // If we have three holidays in databaseHolidays the code inside the
-      // map will run three times. Once for each holiday item.
-      const holidays = databaseHolidays.map((databaseHoliday) => {
-        // databaseHoliday looks like {id: 1, name: "Christmas", startDate: 1608854400}
+      getLatestMeeting((databaseLatestMeeting) => {
+        console.log(databaseLatestMeeting);
         //
-        // Here we take the start date from the database entry and set it to a variable
-        const databaseStartDate = databaseHoliday.startDate;
+        // databaseHolidays is the data we got straight from the database.
+        // It looks like this:
+        // [
+        //  {id: 1, name: "Christmas", date: 1608854400}
+        // ]
+        // Remember, date here is a Unix timestamp which isn't very readable.
+
         //
-        // then we take that variable that has the database start date
-        // and use luxon to make it a date we can read.
-        // 1608854400 goes in, and "December 25" comes out.
-        const formattedStartDate = luxon.DateTime.fromSeconds(
-          databaseStartDate
-        ).toFormat("MMMM dd");
+        // Here we use a thing called map.
+        // What map does is it goes through every item in the array,
+        // and does something to it.
+        // If we have three holidays in databaseHolidays the code inside the
+        // map will run three times. Once for each holiday item.
+        const holidays = databaseHolidays.map((databaseHoliday) => {
+          // databaseHoliday looks like {id: 1, name: "Christmas", startDate: 1608854400}
+          //
+          // Here we take the start date from the database entry and set it to a variable
+          const databaseStartDate = databaseHoliday.startDate;
+          //
+          // then we take that variable that has the database start date
+          // and use luxon to make it a date we can read.
+          // 1608854400 goes in, and "December 25" comes out.
+          const formattedStartDate = luxon.DateTime.fromSeconds(
+            databaseStartDate
+          ).toFormat("MMMM dd");
+          //
+          // Here is where we tell the map what data we want to use.
+          // Notice that we are passing id and name directly back
+          // but for the date we are using the date we formatted.
+          return {
+            id: databaseHoliday.id,
+            name: databaseHoliday.name,
+            startDate: formattedStartDate,
+          };
+        });
+        const meetings = databaseMeetings.map((databaseMeeting) => {
+
+          const databaseStartDate = databaseMeeting.date;
+
+          const formattedStartDate = luxon.DateTime.fromSeconds(
+            databaseStartDate
+          ).toFormat("MMMM dd");
+
+          return {
+            ...databaseMeeting,
+            date: formattedStartDate
+          };
+        });
+
         //
-        // Here is where we tell the map what data we want to use.
-        // Notice that we are passing id and name directly back
-        // but for the date we are using the date we formatted.
-        return {
-          id: databaseHoliday.id,
-          name: databaseHoliday.name,
-          startDate: formattedStartDate,
-        };
-      });
-      const meetings = databaseMeetings.map((databaseMeeting) => {
-
-        const databaseStartDate = databaseMeeting.date;
-
-        const formattedStartDate = luxon.DateTime.fromSeconds(
-          databaseStartDate
-        ).toFormat("MMMM dd");
-
-        return {
-          ...databaseMeeting,
-          date: formattedStartDate
-        };
-      });
-      console.log(meetings);
-
-      //
-      // Finally we want to use the data we retrieved and formatted from the database
-      // and pass it into our HTML files.
-      // What this code is doing is passing a variable called holiday
-      // into the file located in our project at /site/views/pages/index.ejs
-      response.render("pages/index", {
-        holidays: holidays,
-        meetings: meetings
+        // Finally we want to use the data we retrieved and formatted from the database
+        // and pass it into our HTML files.
+        // What this code is doing is passing a variable called holiday
+        // into the file located in our project at /site/views/pages/index.ejs
+        response.render("pages/index", {
+          holidays: holidays,
+          meetings: meetings
+        });
       });
     });
   });
@@ -221,6 +222,11 @@ const getAllHolidays = (callback) => {
 const getAllMeetings = (callback) => {
   db.all("SELECT * from Meetings", (err, rows) => {
     callback(rows);
+  });
+};
+const getLatestMeeting = (callback) => {
+  db.all("SELECT * FROM Meetings ORDER BY date DESC LIMIT 1", (err, row) => {
+    callback(row[0]);
   });
 };
 
