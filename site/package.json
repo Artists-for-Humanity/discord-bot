@@ -10,6 +10,7 @@
     "ejs": "3.1.5",
     "express": "^4.17.1",
     "express-ejs-layouts": "2.5.0",
+    "flatpickr": "^4.6.9",
     "fs": "0.0.1-security",
     "luxon": "1.25.0",
     "sqlite3": "^4.1.1"
