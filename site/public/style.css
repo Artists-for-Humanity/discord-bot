@@ -16,6 +16,9 @@ body {
   font-family: "Helvetica", san-serif;
   font-size: 20px;
   padding: 1rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /*
@@ -41,6 +44,21 @@ body {
   text-align: left;
 }
 
+form fieldset {
+  border:0;
+  padding:0;
+  margin-bottom: 10px;
+}
+
+form label {
+  display: block;
+}
+
+form input {
+  display: block;
+  width: 100%;
+}
+
 /*
   Nav styles
 */
@@ -56,7 +74,7 @@ body {
   margin-right: 1rem;
 }
 
-/* 
+/*
   Form styles
 */
 
