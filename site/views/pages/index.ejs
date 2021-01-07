@@ -1,16 +1,6 @@
-<!--
-  This is the code for our home page.
-  All of the HTML you see here will be put inside our template
-  located at views/templates/page.ejs
--->
 <div class="home-page-grid">
   <section>
     <h2>Holidays</h2>
-    <!--
-      This is an HTML table.
-      It is a conveninent way to put data into rows and columns.
-      Read more about them here: https://www.w3schools.com/html/html_tables.asp
-    -->
     <table class="table">
       <thead>
         <tr>
@@ -19,14 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <!--
-          Here we loop through all of the holidays and put some HTML for each one.
-        -->
         <% holidays.forEach((holiday) => { %>
-          <!--
-            Notice how we are passing some variables into this.
-            We can use these variables inside the holiday-table-row.ejs file.
-          -->
           <%-
             include('../components/holiday-table-row', {
               name: holiday.name,
@@ -40,11 +23,6 @@
   </section>
   <section>
     <h2>Meetings</h2>
-    <!--
-      This is an HTML table.
-      It is a conveninent way to put data into rows and columns.
-      Read more about them here: https://www.w3schools.com/html/html_tables.asp
-    -->
     <table class="table">
       <thead>
         <tr>
@@ -54,14 +32,7 @@
         </tr>
       </thead>
       <tbody>
-        <!--
-          Here we loop through all of the holidays and put some HTML for each one.
-        -->
         <% meetings.forEach((meeting) => { %>
-          <!--
-            Notice how we are passing some variables into this.
-            We can use these variables inside the holiday-table-row.ejs file.
-          -->
           <%-
             include('../components/meeting-table-row', meeting)
           %>
@@ -70,10 +41,6 @@
     </table>
     <section>
       <h2>Add Meeting</h2>
-      <!--
-        This takes the html inside of views/components/new-holiday-form.ejx
-        and places it here
-      -->
       <%- include('../components/new-meeting-form') %>
     </section>
     <section>
@@ -82,10 +49,6 @@
   </section>
   <section>
     <h2>Add Holiday</h2>
-    <!--
-      This takes the html inside of views/components/new-holiday-form.ejx
-      and places it here
-    -->
     <%- include('../components/new-holiday-form') %>
   </section>
 </div>
