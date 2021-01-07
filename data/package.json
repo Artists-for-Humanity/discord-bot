@@ -4,7 +4,8 @@
   "description": "This folder will hold the database file.",
   "main": "setup.js",
   "scripts": {
-    "setup": "node setup.js"
+    "reset-db": "rm database.db || true",
+    "setup": "npm run reset-db; node setup.js"
   },
   "author": "",
   "license": "ISC",
