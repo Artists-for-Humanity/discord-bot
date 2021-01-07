@@ -1,28 +1,5 @@
 <div class="home-page-grid">
-  <section>
-    <h2>Holidays</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Start Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% holidays.forEach((holiday) => { %>
-          <%-
-            include('../components/holiday-table-row', {
-              name: holiday.name,
-              startDate: holiday.startDate,
-              id: holiday.id
-            })
-          %>
-        <% }) %>
-      </tbody>
-    </table>
-    <h2>Add Holiday</h2>
-    <%- include('../components/new-holiday-form') %>
-  </section>
+  <%- include('../components/holiday-section') %>
   <section>
     <h2>Meetings</h2>
     <table class="table">
