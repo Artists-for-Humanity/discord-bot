@@ -9,19 +9,17 @@ const fs = require("fs");
 const dbFile = "../data/database.db";
 const dbExists = fs.existsSync(dbFile);
 if (!dbExists) {
-  console.log(
+  console.error(
     "Please run npm setup in the /data folder to create the database"
   );
-  return;
+  process.exit();
 }
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(dbFile);
 
 // Express js is what we use to make a website server
 const port = process.env.PORT || 3333;
-const {
-  response
-} = require("express");
+const { response } = require("express");
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
@@ -30,9 +28,11 @@ app.use(expressLayouts);
 app.set("layout", "./templates/page");
 app.set("view engine", "ejs");
 app.use(express.json());
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 const luxon = require("luxon");
 
@@ -97,7 +97,6 @@ app.get("/", async (request, response) => {
           };
         });
         const meetings = databaseMeetings.map((databaseMeeting) => {
-
           const databaseStartDate = databaseMeeting.date;
 
           const formattedStartDate = luxon.DateTime.fromSeconds(
@@ -106,7 +105,7 @@ app.get("/", async (request, response) => {
 
           return {
             ...databaseMeeting,
-            date: formattedStartDate
+            date: formattedStartDate,
           };
         });
 
@@ -117,12 +116,11 @@ app.get("/", async (request, response) => {
         // into the file located in our project at /site/views/pages/index.ejs
         response.render("pages/index", {
           holidays: holidays,
-          meetings: meetings
+          meetings: meetings,
         });
       });
     });
   });
-
 });
 
 //
@@ -230,12 +228,12 @@ const getLatestMeeting = (callback) => {
   });
 };
 
-
 // Add a holiday to the database with a name and start date.
 // Run our callback function once it has been added.
 const addHoliday = (name, startDate, callback) => {
   db.run(
-    `INSERT INTO Holidays (name, startDate) VALUES ($name, $startDate)`, {
+    `INSERT INTO Holidays (name, startDate) VALUES ($name, $startDate)`,
+    {
       $name: name,
       $startDate: startDate,
     },
@@ -247,7 +245,8 @@ const addHoliday = (name, startDate, callback) => {
 };
 const addMeeting = (zoomLink, name, date, callback) => {
   db.run(
-    `INSERT INTO Meetings (zoomLink, name, date) VALUES ($zoomLink, $name, $date)`, {
+    `INSERT INTO Meetings (zoomLink, name, date) VALUES ($zoomLink, $name, $date)`,
+    {
       $zoomLink: zoomLink,
       $name: name,
       $date: date,
@@ -258,7 +257,6 @@ const addMeeting = (zoomLink, name, date, callback) => {
     }
   );
 };
-
 
 // Delete a holiday with a specific id.
 // Run our callback function once it has been added.

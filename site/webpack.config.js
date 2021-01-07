@@ -1,7 +1,8 @@
 var path = require("path");
 var webpack = require("webpack");
+const nodeExternals = require("webpack-node-externals");
 
-module.exports = {
+const frontendConfig = {
   mode: "development",
   entry: "./js/main.js",
   output: {
@@ -26,3 +27,19 @@ module.exports = {
     colors: true,
   },
 };
+
+const backendConfig = {
+  mode: "development",
+  target: "node",
+  context: path.resolve(__dirname),
+  entry: {
+    app: ["./server/server.js"],
+  },
+  output: {
+    path: path.resolve(__dirname, "server/build"),
+    filename: "server.bundle.js",
+  },
+  externals: [nodeExternals()],
+};
+
+module.exports = [frontendConfig, backendConfig];
