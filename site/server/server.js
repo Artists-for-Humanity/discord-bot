@@ -24,6 +24,7 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 app.use(express.static("public"));
+app.use(express.static("js/build"));
 app.use(expressLayouts);
 app.set("layout", "./templates/page");
 app.set("view engine", "ejs");
