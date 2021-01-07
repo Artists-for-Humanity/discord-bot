@@ -98,7 +98,6 @@ app.get("/", async (request, response) => {
           };
         });
         const meetings = databaseMeetings.map((databaseMeeting) => {
-
           const databaseStartDate = databaseMeeting.date;
 
           const formattedStartDate = luxon.DateTime.fromSeconds(
@@ -107,7 +106,7 @@ app.get("/", async (request, response) => {
 
           return {
             ...databaseMeeting,
-            date: formattedStartDate
+            date: formattedStartDate,
           };
         });
 
@@ -118,7 +117,7 @@ app.get("/", async (request, response) => {
         // into the file located in our project at /site/views/pages/index.ejs
         response.render("pages/index", {
           holidays: holidays,
-          meetings: meetings
+          meetings: meetings,
         });
       });
     });
@@ -247,7 +246,8 @@ const addHoliday = (name, startDate, callback) => {
 };
 const addMeeting = (zoomLink, name, date, callback) => {
   db.run(
-    `INSERT INTO Meetings (zoomLink, name, date) VALUES ($zoomLink, $name, $date)`, {
+    `INSERT INTO Meetings (zoomLink, name, date) VALUES ($zoomLink, $name, $date)`,
+    {
       $zoomLink: zoomLink,
       $name: name,
       $date: date,
@@ -258,7 +258,6 @@ const addMeeting = (zoomLink, name, date, callback) => {
     }
   );
 };
-
 
 // Delete a holiday with a specific id.
 // Run our callback function once it has been added.
