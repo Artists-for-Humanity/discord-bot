@@ -1,10 +1,10 @@
 <!--
   This is the form you fill out to add a new holiday.
   Notice that the action here matches one of the URLs in server.js
-  
+
   This file:
   action="/add-holiday"
-  
+
   server.js:
   app.post("/add-holiday", ....
 -->
@@ -25,10 +25,12 @@
     <label for="name">Name</label>
     <!--
       Notice that there is an attribute named required here.
-      This will make it so our form will not submit unless 
+      This will make it so our form will not submit unless
       the user typed in a value.
     -->
     <input type="text" name="name" id="name" required />
+  </fieldset>
+  <fieldset>
     <!--
       Here is a label and input for our start date.
     -->
