@@ -1,7 +1,8 @@
 {
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "webpack": "webpack --watch"
   },
   "dependencies": {
     "body-parser": "1.19.0",
@@ -16,6 +17,12 @@
     "node": "12.x"
   },
   "devDependencies": {
-    "nodemon": "2.0.6"
+    "@babel/core": "7.12.10",
+    "@babel/preset-env": "7.12.11",
+    "babel-loader": "8.2.2",
+    "nodemon": "2.0.6",
+    "path": "0.12.7",
+    "webpack": "5.11.1",
+    "webpack-cli": "4.3.1"
   }
 }
