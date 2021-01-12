@@ -9,10 +9,10 @@ const fs = require("fs");
 const dbFile = "../data/database.db";
 const dbExists = fs.existsSync(dbFile);
 if (!dbExists) {
-  console.log(
+  console.error(
     "Please run npm setup in the /data folder to create the database"
   );
-  return;
+  process.exit();
 }
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(dbFile);
@@ -24,11 +24,16 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 app.use(express.static("public"));
+app.use(express.static("js/build"));
 app.use(expressLayouts);
 app.set("layout", "./templates/page");
 app.set("view engine", "ejs");
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 const luxon = require("luxon");
 
