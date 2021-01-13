@@ -79,7 +79,10 @@ async function getZoomReply() {
   const zoomDate= luxon.DateTime.fromSeconds(
     latestMeeting.date
   ).toFormat("MMMM dd");
-  return "the next Zoom meeting is on "+zoomDate+". The link is: " + latestMeeting.zoomLink; 
+  const zoomTime= luxon.DateTime.fromSeconds(
+    latestMeeting.date
+  ).toFormat("hh:mm a");
+  return "the next Zoom meeting is on "+zoomDate+" at "+zoomTime+". The link is: " + latestMeeting.zoomLink; 
 }
 const getLatestMeeting = (db) => {
   return new Promise((resolve, reject) => {
