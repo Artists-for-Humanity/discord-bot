@@ -4,6 +4,8 @@
   IT'S JUST SETTING SOME THINGS UP
 */
 
+const { getAllHolidays } = require("../../data/helpers");
+
 // Setup our database
 const fs = require("fs");
 const dbFile = "../data/database.db";
@@ -57,52 +59,66 @@ app.get("/", async (request, response) => {
 
   //
   // Get all of our holidays
-  getAllHolidays((databaseData) => {
-    //
-    // databaseData is the data we got straight from the database.
-    // It looks like this:
-    // [
-    //  {id: 1, name: "Christmas", date: 1608854400}
-    // ]
-    // Remember, date here is a Unix timestamp which isn't very readable.
+  const databaseHolidays = await getAllHolidays(db);
+  const databaseMeetings = await getAllMeetings(db);
+  const databaseLatestMeeting = await getLatestMeeting(db);
+  //
+  // databaseHolidays is the data we got straight from the database.
+  // It looks like this:
+  // [
+  //  {id: 1, name: "Christmas", date: 1608854400}
+  // ]
+  // Remember, date here is a Unix timestamp which isn't very readable.
 
+  //
+  // Here we use a thing called map.
+  // What map does is it goes through every item in the array,
+  // and does something to it.
+  // If we have three holidays in databaseHolidays the code inside the
+  // map will run three times. Once for each holiday item.
+  const holidays = databaseHolidays.map((databaseHoliday) => {
+    // databaseHoliday looks like {id: 1, name: "Christmas", startDate: 1608854400}
     //
-    // Here we use a thing called map.
-    // What map does is it goes through every item in the array,
-    // and does something to it.
-    // If we have three holidays in databaseData the code inside the
-    // map will run three times. Once for each holiday item.
-    const holidays = databaseData.map((databaseHoliday) => {
-      // databaseHoliday looks like {id: 1, name: "Christmas", startDate: 1608854400}
-      //
-      // Here we take the start date from the database entry and set it to a variable
-      const databaseStartDate = databaseHoliday.startDate;
-      //
-      // then we take that variable that has the database start date
-      // and use luxon to make it a date we can read.
-      // 1608854400 goes in, and "December 25" comes out.
-      const formattedStartDate = luxon.DateTime.fromSeconds(
-        databaseStartDate
-      ).toFormat("MMMM dd");
-      //
-      // Here is where we tell the map what data we want to use.
-      // Notice that we are passing id and name directly back
-      // but for the date we are using the date we formatted.
-      return {
-        id: databaseHoliday.id,
-        name: databaseHoliday.name,
-        startDate: formattedStartDate,
-      };
-    });
+    // Here we take the start date from the database entry and set it to a variable
+    const databaseStartDate = databaseHoliday.startDate;
+    //
+    // then we take that variable that has the database start date
+    // and use luxon to make it a date we can read.
+    // 1608854400 goes in, and "December 25" comes out.
+    const formattedStartDate = luxon.DateTime.fromSeconds(
+      databaseStartDate
+    ).toFormat("MMMM dd");
+    //
+    // Here is where we tell the map what data we want to use.
+    // Notice that we are passing id and name directly back
+    // but for the date we are using the date we formatted.
+    return {
+      id: databaseHoliday.id,
+      name: databaseHoliday.name,
+      startDate: formattedStartDate,
+    };
+  });
+  const meetings = databaseMeetings.map((databaseMeeting) => {
+    const databaseStartDate = databaseMeeting.date;
 
-    //
-    // Finally we want to use the data we retrieved and formatted from the database
-    // and pass it into our HTML files.
-    // What this code is doing is passing a variable called holiday
-    // into the file located in our project at /site/views/pages/index.ejs
-    response.render("pages/index", {
-      holidays: holidays,
-    });
+    const formattedStartDate = luxon.DateTime.fromSeconds(
+      databaseStartDate
+    ).toFormat("MMMM dd");
+
+    return {
+      ...databaseMeeting,
+      date: formattedStartDate,
+    };
+  });
+
+  //
+  // Finally we want to use the data we retrieved and formatted from the database
+  // and pass it into our HTML files.
+  // What this code is doing is passing a variable called holiday
+  // into the file located in our project at /site/views/pages/index.ejs
+  response.render("pages/index", {
+    holidays: holidays,
+    meetings: meetings,
   });
 });
 
@@ -128,6 +144,30 @@ app.post("/add-holiday", (request, response) => {
 
   // Add the holiday with name and date
   addHoliday(formHolidayName, unixStartDate, () => {
+    //
+    // After we add the holiday to the database
+    // reload the homepage.
+    response.redirect("/");
+  });
+});
+
+app.post("/add-meeting", (request, response) => {
+  //
+  // We can get the name and start date sent by the form
+  // through request.body
+  //
+  // This start date from the form is sent to use like 2020-12-25
+  const formMeetingStartDate = request.body.startDate;
+  const formMeetingName = request.body.name;
+  const formMeetingZoomLink = request.body.zoomLink;
+  //
+  // Here we convert the start date from the 2020-12-25 format into the Unix date format 1608854400
+  const unixStartDate = luxon.DateTime.fromSQL(
+    formMeetingStartDate
+  ).toSeconds();
+
+  // Add the holiday with name and date
+  addMeeting(formMeetingZoomLink, formMeetingName, unixStartDate, () => {
     //
     // After we add the holiday to the database
     // reload the homepage.
@@ -168,12 +208,18 @@ app.get("/about", (request, response) => {
   NOTE:
   DATABASE STUFF. DON'T WORRY TOO MUCH ABOUT THE DETAILS.
 */
-
-// Get all of our Holidays from the database
-// and pass them to our callback function once they are retrieved.
-const getAllHolidays = (callback) => {
-  db.all("SELECT * from Holidays", (err, rows) => {
-    callback(rows);
+const getAllMeetings = (db) => {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * from Meetings", (err, rows) => {
+      resolve(rows);
+    });
+  });
+};
+const getLatestMeeting = (db) => {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM Meetings ORDER BY date DESC LIMIT 1", (err, row) => {
+      resolve(row[0]);
+    });
   });
 };
 
@@ -185,6 +231,20 @@ const addHoliday = (name, startDate, callback) => {
     {
       $name: name,
       $startDate: startDate,
+    },
+    () => {
+      // Run our callback function
+      callback();
+    }
+  );
+};
+const addMeeting = (zoomLink, name, date, callback) => {
+  db.run(
+    `INSERT INTO Meetings (zoomLink, name, date) VALUES ($zoomLink, $name, $date)`,
+    {
+      $zoomLink: zoomLink,
+      $name: name,
+      $date: date,
     },
     () => {
       // Run our callback function

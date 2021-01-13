@@ -1,0 +1,22 @@
+<section>
+  <h2>Meetings</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Zoom Link</th>
+        <th>Date</th>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% meetings.forEach((meeting) => { %>
+        <%-
+          include('../components/meeting-table-row', meeting)
+        %>
+      <% }) %>
+    </tbody>
+  </table>
+  <h2>Add Meeting</h2>
+  <%- include('../components/new-meeting-form') %>
+  <h2>Latest Meeting</h2>
+</section>

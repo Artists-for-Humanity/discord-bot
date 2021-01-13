@@ -1,8 +1,11 @@
 // Import our .env file
 require("dotenv").config();
 
+// Import our database functions
+const { getAllHolidays } = require("../data/helpers");
+
 // Import the plugins we need
-const Discord = require("discord.js");
+const { Client, MessageEmbed } = require("discord.js");
 const luxon = require("luxon");
 
 // Setup our database
@@ -19,7 +22,7 @@ const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(dbFile);
 
 // Set up the Discord plugin.
-const client = new Discord.Client();
+const client = new Client();
 const CHANNEL_ID = process.env.CHANNEL_ID;
 
 if (!process.env.BOT_TOKEN) {
@@ -34,37 +37,43 @@ if (!process.env.CHANNEL_ID) {
 
 client.login(process.env.BOT_TOKEN);
 client.on("ready", readyDiscord);
+client.on("warn", (info) => console.log(info));
+client.on("error", console.error);
 
 async function readyDiscord() {
-  console.log("Bot is ready");
-  console.log("Testing get reply...");
-  const reply = await getReply();
-  console.log(reply);
+  console.log(`${client.user.username} ready!`);
 }
 
-client.on("message", gotMessage);
+client.on("message", messageRecieved);
 
-async function gotMessage(msg) {
-  console.log("Message in channel");
-  if (msg.channel.id == CHANNEL_ID && msg.content === "when is break") {
-    const reply = await getReply();
-    msg.reply(reply);
+async function messageRecieved(message) {
+  if (message.author.bot) return;
+
+  console.log(`Message Received: ${message.content}`);
+
+  if (message.channel.id == CHANNEL_ID) {
+    if (message.content.startsWith("/holiday")) {
+      const reply = await getHolidayReply();
+      message.reply(reply);
+    }
+    if (message.content.startsWith("/zoom")) {
+      const reply = await getZoomReply();
+      message.reply(reply);
+    }
   }
 }
 
-async function getReply() {
-  return new Promise((resolve, reject) => {
-    db.all("SELECT * from Holidays", (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        const index = Math.floor(Math.random() * rows.length);
-        const holiday = rows[index];
-        const formattedStartDate = luxon.DateTime.fromSeconds(
-          holiday["startDate"]
-        ).toFormat("MMMM dd");
-        resolve(holiday["name"] + " starts on " + formattedStartDate);
-      }
-    });
-  });
+async function getHolidayReply() {
+  const holidays = await getAllHolidays(db);
+  const index = Math.floor(Math.random() * holidays.length);
+  const holiday = holidays[index];
+
+  const formattedStartDate = luxon.DateTime.fromSeconds(
+    holiday["startDate"]
+  ).toFormat("MMMM dd");
+  return holiday["name"] + " starts on " + formattedStartDate;
+}
+
+async function getZoomReply() {
+  return "Zoom Meeting";
 }
