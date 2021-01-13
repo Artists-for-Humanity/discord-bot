@@ -4,6 +4,8 @@
   IT'S JUST SETTING SOME THINGS UP
 */
 
+const { getAllHolidays } = require("../../data/helpers");
+
 // Setup our database
 const fs = require("fs");
 const dbFile = "../data/database.db";
@@ -57,70 +59,66 @@ app.get("/", async (request, response) => {
 
   //
   // Get all of our holidays
-  getAllHolidays((databaseHolidays) => {
-    getAllMeetings((databaseMeetings) => {
-      getLatestMeeting((databaseLatestMeeting) => {
-        console.log(databaseLatestMeeting);
-        //
-        // databaseHolidays is the data we got straight from the database.
-        // It looks like this:
-        // [
-        //  {id: 1, name: "Christmas", date: 1608854400}
-        // ]
-        // Remember, date here is a Unix timestamp which isn't very readable.
+  const databaseHolidays = await getAllHolidays(db);
+  const databaseMeetings = await getAllMeetings(db);
+  const databaseLatestMeeting = await getLatestMeeting(db);
+  //
+  // databaseHolidays is the data we got straight from the database.
+  // It looks like this:
+  // [
+  //  {id: 1, name: "Christmas", date: 1608854400}
+  // ]
+  // Remember, date here is a Unix timestamp which isn't very readable.
 
-        //
-        // Here we use a thing called map.
-        // What map does is it goes through every item in the array,
-        // and does something to it.
-        // If we have three holidays in databaseHolidays the code inside the
-        // map will run three times. Once for each holiday item.
-        const holidays = databaseHolidays.map((databaseHoliday) => {
-          // databaseHoliday looks like {id: 1, name: "Christmas", startDate: 1608854400}
-          //
-          // Here we take the start date from the database entry and set it to a variable
-          const databaseStartDate = databaseHoliday.startDate;
-          //
-          // then we take that variable that has the database start date
-          // and use luxon to make it a date we can read.
-          // 1608854400 goes in, and "December 25" comes out.
-          const formattedStartDate = luxon.DateTime.fromSeconds(
-            databaseStartDate
-          ).toFormat("MMMM dd");
-          //
-          // Here is where we tell the map what data we want to use.
-          // Notice that we are passing id and name directly back
-          // but for the date we are using the date we formatted.
-          return {
-            id: databaseHoliday.id,
-            name: databaseHoliday.name,
-            startDate: formattedStartDate,
-          };
-        });
-        const meetings = databaseMeetings.map((databaseMeeting) => {
-          const databaseStartDate = databaseMeeting.date;
+  //
+  // Here we use a thing called map.
+  // What map does is it goes through every item in the array,
+  // and does something to it.
+  // If we have three holidays in databaseHolidays the code inside the
+  // map will run three times. Once for each holiday item.
+  const holidays = databaseHolidays.map((databaseHoliday) => {
+    // databaseHoliday looks like {id: 1, name: "Christmas", startDate: 1608854400}
+    //
+    // Here we take the start date from the database entry and set it to a variable
+    const databaseStartDate = databaseHoliday.startDate;
+    //
+    // then we take that variable that has the database start date
+    // and use luxon to make it a date we can read.
+    // 1608854400 goes in, and "December 25" comes out.
+    const formattedStartDate = luxon.DateTime.fromSeconds(
+      databaseStartDate
+    ).toFormat("MMMM dd");
+    //
+    // Here is where we tell the map what data we want to use.
+    // Notice that we are passing id and name directly back
+    // but for the date we are using the date we formatted.
+    return {
+      id: databaseHoliday.id,
+      name: databaseHoliday.name,
+      startDate: formattedStartDate,
+    };
+  });
+  const meetings = databaseMeetings.map((databaseMeeting) => {
+    const databaseStartDate = databaseMeeting.date;
 
-          const formattedStartDate = luxon.DateTime.fromSeconds(
-            databaseStartDate
-          ).toFormat("MMMM dd");
+    const formattedStartDate = luxon.DateTime.fromSeconds(
+      databaseStartDate
+    ).toFormat("MMMM dd");
 
-          return {
-            ...databaseMeeting,
-            date: formattedStartDate,
-          };
-        });
+    return {
+      ...databaseMeeting,
+      date: formattedStartDate,
+    };
+  });
 
-        //
-        // Finally we want to use the data we retrieved and formatted from the database
-        // and pass it into our HTML files.
-        // What this code is doing is passing a variable called holiday
-        // into the file located in our project at /site/views/pages/index.ejs
-        response.render("pages/index", {
-          holidays: holidays,
-          meetings: meetings,
-        });
-      });
-    });
+  //
+  // Finally we want to use the data we retrieved and formatted from the database
+  // and pass it into our HTML files.
+  // What this code is doing is passing a variable called holiday
+  // into the file located in our project at /site/views/pages/index.ejs
+  response.render("pages/index", {
+    holidays: holidays,
+    meetings: meetings,
   });
 });
 
@@ -210,22 +208,18 @@ app.get("/about", (request, response) => {
   NOTE:
   DATABASE STUFF. DON'T WORRY TOO MUCH ABOUT THE DETAILS.
 */
-
-// Get all of our Holidays from the database
-// and pass them to our callback function once they are retrieved.
-const getAllHolidays = (callback) => {
-  db.all("SELECT * from Holidays", (err, rows) => {
-    callback(rows);
+const getAllMeetings = (db) => {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * from Meetings", (err, rows) => {
+      resolve(rows);
+    });
   });
 };
-const getAllMeetings = (callback) => {
-  db.all("SELECT * from Meetings", (err, rows) => {
-    callback(rows);
-  });
-};
-const getLatestMeeting = (callback) => {
-  db.all("SELECT * FROM Meetings ORDER BY date DESC LIMIT 1", (err, row) => {
-    callback(row[0]);
+const getLatestMeeting = (db) => {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM Meetings ORDER BY date DESC LIMIT 1", (err, row) => {
+      resolve(row[0]);
+    });
   });
 };
 
