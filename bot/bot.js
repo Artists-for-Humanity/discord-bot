@@ -75,5 +75,14 @@ async function getHolidayReply() {
 }
 
 async function getZoomReply() {
+  const latestMeeting = await getLatestMeeting(db);
+  console.log(latestMeeting)
   return "Zoom Meeting";
 }
+const getLatestMeeting = (db) => {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM Meetings ORDER BY date DESC LIMIT 1", (err, row) => {
+      resolve(row[0]);
+    });
+  });
+};
