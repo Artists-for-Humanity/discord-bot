@@ -76,8 +76,8 @@ async function getHolidayReply() {
 
 async function getZoomReply() {
   const latestMeeting = await getLatestMeeting(db);
-  console.log(latestMeeting)
-  return "Zoom Meeting";
+  console.log(latestMeeting.zoomLink)
+  return "the next Zoom meeting is on Dec 12 @ 5:30. The link is: " + latestMeeting.zoomLink; 
 }
 const getLatestMeeting = (db) => {
   return new Promise((resolve, reject) => {
