@@ -11,5 +11,11 @@
   "bugs": {
     "url": "https://github.com/Artists-for-Humanity/discord-bot/issues"
   },
-  "homepage": "https://github.com/Artists-for-Humanity/discord-bot#readme"
+  "homepage": "https://github.com/Artists-for-Humanity/discord-bot#readme",
+  "scripts": {
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "eslint": "7.17.0"
+  }
 }
