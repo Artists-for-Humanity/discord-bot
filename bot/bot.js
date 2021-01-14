@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 // Import our database functions
-const { getAllHolidays } = require("../data/helpers");
+const { getAllHolidays } = require("../data/helpers/database");
 
 // Import the plugins we need
 const { Client, MessageEmbed } = require("discord.js");

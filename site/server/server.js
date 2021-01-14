@@ -4,7 +4,7 @@
   IT'S JUST SETTING SOME THINGS UP
 */
 
-const { getAllHolidays } = require("../../data/helpers");
+const { getAllHolidays } = require("../../data/helpers/database");
 
 // Setup our database
 const fs = require("fs");
@@ -103,7 +103,7 @@ app.get("/", async (request, response) => {
 
     const formattedStartDate = luxon.DateTime.fromSeconds(
       databaseStartDate
-    ).toFormat("MMMM dd");
+    ).toFormat("MMMM dd hh:mma");
 
     return {
       ...databaseMeeting,

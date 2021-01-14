@@ -1,8 +1,10 @@
 import flatpickr from "flatpickr";
 
-const datePickers = document.querySelector(".date-picker");
+flatpickr(".date-picker", {
+  dateFormat: "Y-m-d H:i",
+});
 
-flatpickr(datePickers, {
+flatpickr(".date-and-time-picker", {
   enableTime: true,
   dateFormat: "Y-m-d H:i",
 });
