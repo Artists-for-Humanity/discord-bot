@@ -47,6 +47,12 @@ async function readyDiscord() {
 
 const checkTime = () => {
   console.log("send-invite")
+  // Get latest meeting
+  // Get meeting time
+  // Get current time 
+  // Subtract current time from meeting time
+  // Check if difference is within the range of 29.9 and 30.1
+  // We will send invite here
 }
 setInterval(checkTime, 1000);
 
