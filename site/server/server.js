@@ -4,7 +4,7 @@
   IT'S JUST SETTING SOME THINGS UP
 */
 
-const { getAllHolidays } = require("../../data/helpers");
+const { getAllHolidays } = require("../../data/helpers/database");
 
 // Setup our database
 const fs = require("fs");
