@@ -51,10 +51,13 @@ const checkTime = async () => {
   const latestMeetingTime = latestMeeting.date;
   console.log(latestMeetingTime)
   const currentTime = Math.floor(Date.now() / 1000);
-const timeDifference = latestMeetingTime - currentTime;
-console.log(currentTime)
-console.log(timeDifference)
-  // Subtract current time from meeting time
+  const timeDifference = latestMeetingTime - currentTime;
+  console.log(currentTime)
+  console.log(timeDifference)
+  const timeBefore = 30 * 60;
+  if (timeDifference < (timeBefore)){
+    console.log('send message')
+  }
   // Check if difference is within the range of 29.9 and 30.1
   // We will send invite here
 }
