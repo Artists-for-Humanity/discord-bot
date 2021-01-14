@@ -1,7 +1,8 @@
 {
   "main": "bot.js",
   "scripts": {
-    "start": "nodemon bot.js"
+    "start": "nodemon bot.js",
+    "test": "jest"
   },
   "dependencies": {
     "discord.js": "^12.5.1",
