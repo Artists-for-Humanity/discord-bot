@@ -44,6 +44,12 @@ async function readyDiscord() {
   console.log(`${client.user.username} ready!`);
 }
 
+
+const checkTime = () => {
+  console.log("send-invite")
+}
+setInterval(checkTime, 1000);
+
 client.on("message", messageRecieved);
 
 async function messageRecieved(message) {
