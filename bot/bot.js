@@ -46,8 +46,6 @@ async function readyDiscord() {
 
 const checkDates30Mins = (time1, time2) => {
   const timeDifference = time2 - time1;
-  console.log(currentTime)
-  console.log(timeDifference)
   const timeBefore = 30 * 60;
   if (timeDifference < (timeBefore)){
     return true;
