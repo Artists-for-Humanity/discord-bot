@@ -44,21 +44,27 @@ async function readyDiscord() {
   console.log(`${client.user.username} ready!`);
 }
 
-
+const checkDates30Mins = (time1, time2) => {
+  const timeDifference = time2 - time1;
+  console.log(currentTime)
+  console.log(timeDifference)
+  const timeBefore = 30 * 60;
+  if (timeDifference < (timeBefore)){
+    return true;
+  } else {
+    return false;
+  }
+}
 const checkTime = async () => {
   const latestMeeting = await getLatestMeeting(db);
   console.log("--")
   const latestMeetingTime = latestMeeting.date;
   console.log(latestMeetingTime)
   const currentTime = Math.floor(Date.now() / 1000);
-  const timeDifference = latestMeetingTime - currentTime;
-  console.log(currentTime)
-  console.log(timeDifference)
-  const timeBefore = 30 * 60;
-  if (timeDifference < (timeBefore)){
+  // Check if difference is within the range of 29.9 and 30.1
+  if (checkDates30Mins(currentTime, latestMeetingTime)){
     console.log('send message')
   }
-  // Check if difference is within the range of 29.9 and 30.1
   // We will send invite here
 }
 setInterval(checkTime, 1000);
