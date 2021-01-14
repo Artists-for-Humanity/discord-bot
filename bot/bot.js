@@ -45,10 +45,12 @@ async function readyDiscord() {
 }
 
 
-const checkTime = () => {
-  console.log("send-invite")
-  // Get latest meeting
-  // Get meeting time
+const checkTime = async () => {
+  const latestMeeting = await getLatestMeeting(db);
+  console.log("--")
+  console.log(latestMeeting)
+  const latestMeetingTime = latestMeeting.date;
+  console.log(latestMeetingTime)
   // Get current time 
   // Subtract current time from meeting time
   // Check if difference is within the range of 29.9 and 30.1
