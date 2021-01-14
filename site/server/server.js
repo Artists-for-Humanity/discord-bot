@@ -103,7 +103,7 @@ app.get("/", async (request, response) => {
 
     const formattedStartDate = luxon.DateTime.fromSeconds(
       databaseStartDate
-    ).toFormat("MMMM dd");
+    ).toFormat("MMMM dd hh:mma");
 
     return {
       ...databaseMeeting,
