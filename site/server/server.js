@@ -204,6 +204,14 @@ app.get("/about", (request, response) => {
   response.render("pages/about");
 });
 
+// This function runs everytime someone goes to "/contact.
+app.get("/contact", (request, response) => {
+  // Show our contact page
+  response.render("pages/contact");
+})
+
+
+
 /*
   NOTE:
   DATABASE STUFF. DON'T WORRY TOO MUCH ABOUT THE DETAILS.
